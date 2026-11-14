@@ -1,45 +1,132 @@
-const fs = require('fs');
-const DIR_DATA = "../../data/"
-const DIR_ACCOUNTS = DIR_DATA + "spheem_accounts"
-const FILE_TRANSACTIONS = DIR_DATA + "spheem_transactions"
+const FS = require('fs');
+const DIR_DATA = "../../data/spheem/"
+const DIR_ACCOUNTS = DIR_DATA + "accounts/"
+const FILE_TRANSACTIONS = DIR_DATA + "transactions"
+const RC_OK = "OK"
+const RC_FAIL = "FAIL"
 
 // *** Hello ***
 function hello(request)
 {
-    return "Hello, Spheem!"
+    return [RC_OK, "Hello, Spheem!"]
 }
 
 // *** Create Account ***
 function createAccount(request)
 {
-    const username = request.username || "USERNAME"
-    const password = request.password || "PASSWORD"
-    const filename = DIR_ACCOUNTS + "/" + username
-    if (!fs.existsSync(DIR_ACCOUNTS)) fs.mkdirSync(DIR_ACCOUNTS, { recursive: true })
-    if (fs.existsSync(filename)) return "Account already exists!"
-    try { fs.writeFileSync(filename, password) }
-    catch (err) { return "Failed! " + err }
-    return "Success!"
+    // Get request parameters
+    const username = request.username
+    const password = request.password
+    
+    // Validate request parameters
+    if (username == null) return [RC_FAIL, "Invalid username!"]
+    if (password == null) return [RC_FAIL, "Invalid password!"]
+
+    // Construct account filename
+    const filename = DIR_ACCOUNTS + username
+        
+    // Validate account does not already exist
+    if (FS.existsSync(filename)) return [RC_FAIL, "Account already exists!"]
+    
+    // Create data directory if does not already exist
+    if (!FS.existsSync(DIR_ACCOUNTS)) FS.mkdirSync(DIR_ACCOUNTS, { recursive: true })
+        
+    try
+    {
+        // Construct new account data
+        const account = { password:password, balance:0 }
+        
+        // Write account data to file
+        FS.writeFileSync(filename, JSON.stringify(account))
+        
+        // Return success
+        return [RC_OK, ""]
+    }
+    catch (err) { return [RC_FAIL, err] }
 }
 
 // *** Login ***
 function login(request)
 {
-    const username = request.username || "USERNAME"
-    const password = request.password || "PASSWORD"
-    const filename = DIR_ACCOUNTS + "/" + username
-    if (!fs.existsSync(filename)) return "Account does not exist!"
-    const actualPassword = fs.readFileSync(filename, 'utf8')
-    if (password != actualPassword) return "Incorrect password!"
-    return "Success!"
+    // Get request parameters
+    const username = request.username
+    const password = request.password
+    
+    // Validate request parameters
+    if (username == null) return [RC_FAIL, "Invalid username!"]
+    if (password == null) return [RC_FAIL, "Invalid password!"]
+
+    // Construct account filename
+    const filename = DIR_ACCOUNTS + username
+    
+    // Validate account exists
+    if (!FS.existsSync(filename)) return [RC_FAIL, "Account does not exist!"]
+        
+    try
+    {
+        // Read account data
+        const account = JSON.parse(FS.readFileSync(filename, 'utf8'))
+        
+        // Validate password
+        if (password != account.password) return [RC_FAIL, "Incorrect password!"]
+            
+        // Return account balance
+        return [RC_OK, account.balance]
+    }
+    catch (err) { return [RC_FAIL, err] }
 }
 
 // *** Pay ***
 function pay(request)
 {
-    const recipient = request.recipient || "USERNAME"
-    const amount = parseInt(request.amount || "0")
-    return "recipient:" + recipient + ", amount:" + amount
+    // Get request parameters
+    const username = request.username
+    const password = request.password
+    const recipient = request.recipient
+    const amountStr = request.amount
+        
+    // Validate request parameters
+    if (username == null) return [RC_FAIL, "Invalid username!"]
+    if (password == null) return [RC_FAIL, "Invalid password!"]
+    if (recipient == null) return [RC_FAIL, "Invalid recipient!"]
+    if (amountStr == null) return [RC_FAIL, "Invalid amount!"]
+        
+    // Parse amount value
+    var amount = 0
+    try { amount = parseInt(amountStr) }
+    catch (err) { return [RC_FAIL, "Invalid amount!"] }
+    
+    // Construct account filenames
+    const filenameSender = DIR_ACCOUNTS + username
+    const filenameRecipient = DIR_ACCOUNTS + recipient
+    
+    // Validate accounts exist
+    if (!FS.existsSync(filenameSender)) return [RC_FAIL, "Sender account does not exist!"]
+    if (!FS.existsSync(filenameRecipient)) return [RC_FAIL, "Recipient account does not exist!"]
+     
+    try
+    {
+        // Read accounts data
+        const accountSender = JSON.parse(FS.readFileSync(filenameSender, 'utf8'))
+        const accountRecipient = JSON.parse(FS.readFileSync(filenameRecipient, 'utf8'))
+        
+        // Validate sender password
+        if (password != accountSender.password) return [RC_FAIL, "Incorrect password!"]
+               
+        // Validate sender balance
+        if (amount > accountSender.balance) return [RC_FAIL, "Insufficient balance!"]
+            
+        // Execute transaction
+        accountSender.balance -= amount
+        accountRecipient.balance += amount
+            
+        // Update account data
+        FS.writeFileSync(filenameSender, JSON.stringify(accountSender))
+        FS.writeFileSync(filenameRecipient, JSON.stringify(accountRecipient))
+        
+        return [RC_OK, ""]
+    }
+    catch (err) { return [RC_FAIL, err] }
 }
 
 const VERB_HELLO = "HELLO"
@@ -60,11 +147,12 @@ module.exports = {
     VERB_LOGIN,
     VERB_PAY,
 
+    // *** MAIN ***
     main: function (verb) {
-        var request = "REQUEST"
-        if (parseInt(process.env.CONTENT_LENGTH || "0") > 0) request = JSON.parse(fs.readFileSync(0, 'utf8'))
-        const response = handlerMap[verb](request)
+        var requestRaw = process.argv[2]
+        if (parseInt(process.env.CONTENT_LENGTH || "0") > 0) requestRaw = FS.readFileSync(0, 'utf8')
+        const response = handlerMap[verb](JSON.parse(requestRaw))
         process.stdout.write("Status: 200 OK\r\nContent-Type: application/json; charset=utf-8\r\n\r\n")
-        process.stdout.write("{ \"responseCode\":\"OK\", \"payload\":\"" + response + "\" }")
+        process.stdout.write(JSON.stringify({resultCode:response[0], payload:response[1]}))
     }
 };
