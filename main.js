@@ -1,5 +1,7 @@
 const fs = require('fs');
-const DIR_ACCOUNTS = "accounts"
+const DIR_DATA = "../../data/"
+const DIR_ACCOUNTS = DIR_DATA + "spheem_accounts"
+const FILE_TRANSACTIONS = DIR_DATA + "spheem_transactions"
 
 // *** Hello ***
 function hello(request)
@@ -13,7 +15,7 @@ function createAccount(request)
     const username = request.username || "USERNAME"
     const password = request.password || "PASSWORD"
     const filename = DIR_ACCOUNTS + "/" + username
-    if (!fs.existsSync(DIR_ACCOUNTS)) fs.mkdirSync(DIR_ACCOUNTS)
+    if (!fs.existsSync(DIR_ACCOUNTS)) fs.mkdirSync(DIR_ACCOUNTS, { recursive: true })
     if (fs.existsSync(filename)) return "Account already exists!"
     try { fs.writeFileSync(filename, password) }
     catch (err) { return "Failed! " + err }
@@ -35,7 +37,9 @@ function login(request)
 // *** Pay ***
 function pay(request)
 {
-    return "username:" + request.username + ", password:" + request.password
+    const recipient = request.recipient || "USERNAME"
+    const amount = parseInt(request.amount || "0")
+    return "recipient:" + recipient + ", amount:" + amount
 }
 
 const VERB_HELLO = "HELLO"
