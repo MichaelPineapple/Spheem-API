@@ -1,5 +1,5 @@
 const FS = require('fs');
-const DIR_DATA = "../../data/spheem/"
+const DIR_DATA = "../../../data/spheem/"
 const DIR_ACCOUNTS = DIR_DATA + "accounts/"
 const FILE_TRANSACTIONS = DIR_DATA + "transactions"
 const RC_OK = "OK"
@@ -149,7 +149,7 @@ module.exports = {
 
     // *** MAIN ***
     main: function (verb) {
-        var requestRaw = process.argv[2]
+        var requestRaw = process.argv[2] || "{}"
         if (parseInt(process.env.CONTENT_LENGTH || "0") > 0) requestRaw = FS.readFileSync(0, 'utf8')
         const response = handlerMap[verb](JSON.parse(requestRaw))
         process.stdout.write("Status: 200 OK\r\nContent-Type: application/json; charset=utf-8\r\n\r\n")
