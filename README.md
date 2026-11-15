@@ -16,11 +16,11 @@ DELETE_ACCOUNT (Delete a Spheem account.)
 https://meowcle.net/cgi-bin/Spheem-API/endpoints/delete.js
 Parameters: username, password
 
-LOGIN (Login to Spheem account. Account balance provided in response payload if password validation successful.)
+LOGIN (Login to Spheem account. Account balance provided in response payload.)
 https://meowcle.net/cgi-bin/Spheem-API/endpoints/login.js
 Parameters: username, password
 
-PAY (Transfer funds from the sender account balance to the recipient account balance.)
+PAY (Transfer funds from the sender account to the recipient account.)
 https://meowcle.net/cgi-bin/Spheem-API/endpoints/pay.js
 Parameters: username, password, recipient, amount
 ```
