@@ -1,9 +1,21 @@
-const FS = require('fs');
+import crypto from 'node:crypto'
+
+const FS = require('fs')
 const DIR_DATA = "../../../data/spheem/"
 const DIR_ACCOUNTS = DIR_DATA + "accounts/"
 const FILE_TRANSACTIONS = DIR_DATA + "transactions"
 const RC_OK = "OK"
 const RC_FAIL = "FAIL"
+
+function hashPassword(password) 
+{
+    return crypto.createHash('sha256').update(password).digest('hex')
+}
+
+function validatePassword(account, password)
+{
+    return (hashPassword(password) == account.passwordHash)
+}
 
 // *** Hello ***
 function hello(request)
@@ -34,7 +46,8 @@ function createAccount(request)
     try
     {
         // Construct new account data
-        const account = { password:password, balance:0 }
+        const passwordHash = hashPassword(password)
+        const account = { passwordHash:passwordHash, balance:0 }
         
         // Write account data to file
         FS.writeFileSync(filename, JSON.stringify(account))
@@ -68,8 +81,8 @@ function login(request)
         const account = JSON.parse(FS.readFileSync(filename, 'utf8'))
         
         // Validate password
-        if (password != account.password) return [RC_FAIL, "Incorrect password!"]
-            
+        if (!validatePassword(accountSender, password)) return [RC_FAIL, "Incorrect password!"]
+
         // Return account balance
         return [RC_OK, account.balance]
     }
@@ -117,8 +130,8 @@ function pay(request)
         const accountRecipient = JSON.parse(FS.readFileSync(filenameRecipient, 'utf8'))
         
         // Validate sender password
-        if (password != accountSender.password) return [RC_FAIL, "Incorrect password!"]
-               
+        if (!validatePassword(accountSender, password)) return [RC_FAIL, "Incorrect password!"]
+
         // Validate sender balance
         if (amount > accountSender.balance) return [RC_FAIL, "Insufficient balance!"]
             
@@ -158,7 +171,7 @@ function deleteAccount(request)
         const account = JSON.parse(FS.readFileSync(filename, 'utf8'))
         
         // Validate password
-        if (password != account.password) return [RC_FAIL, "Incorrect password!"]
+        if (!validatePassword(account, password)) return [RC_FAIL, "Incorrect password!"]
             
         // Return account balance
         return [RC_OK, account.balance]
