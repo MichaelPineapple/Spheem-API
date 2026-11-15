@@ -53,5 +53,5 @@ Content-Type: application/json; charset=utf-8
 ```
 
 ## Related Repos
-Spheem Frontend: https://github.com/MichaelPineapple/Spheem
+Spheem Frontend: https://github.com/MichaelPineapple/Spheem <br>
 SpheemBot: https://github.com/MichaelPineapple/SpheemBot
