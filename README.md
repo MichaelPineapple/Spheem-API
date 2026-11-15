@@ -1,8 +1,9 @@
-# Spheem-API
+# SpheemAPI
 
 API for Spheem, a toy centralized digital (non crypto) currency system.
+Frontend website: https://meowcle.net/Spheem
 
-### Endpoints
+## Endpoints
 ```
 HELLO (Bare minimum endpoint for testing.)
 https://meowcle.net/cgi-bin/Spheem-API/endpoints/hello.js
@@ -25,25 +26,21 @@ https://meowcle.net/cgi-bin/Spheem-API/endpoints/pay.js
 Parameters: username, password, recipient, amount
 ```
 
-### Example
-
+## Example
 Request Body
 ```
 { "username": "meowcle", "password": "abc" }
 ```
-
 Response Body
 ```
 { "result": "OK", "payload": "1000" }
 ```
 
-### Local Execution Example
-
+## Local Execution Example
 Command
 ```
 ./login.js '{ "username":"meowcle", "password":"abc" }'
 ```
-
 Output
 ```
 Access-Control-Allow-Origin: *
@@ -55,6 +52,6 @@ Content-Type: application/json; charset=utf-8
 {"result":"OK","payload":"1000"}   
 ```
 
-### Related Repos
+## Related Repos
 Spheem Frontend: https://github.com/MichaelPineapple/Spheem
 SpheemBot: https://github.com/MichaelPineapple/SpheemBot
