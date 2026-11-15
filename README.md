@@ -26,7 +26,7 @@ https://meowcle.net/cgi-bin/Spheem-API/endpoints/pay.js
 Parameters: username, password, recipient, amount
 ```
 
-## Example
+## Example API Call
 Request Body
 ```
 { "username": "meowcle", "password": "abc" }
