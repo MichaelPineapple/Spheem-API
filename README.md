@@ -2,22 +2,49 @@
 
 API for Spheem, a toy centralized digital (non crypto) currency system.
 
-## Endpoints
-Each endpoint script can also be exeucted locally via the command line. Execution examples have been provided for each.
-
-### Hello
-Bare minimum endpoint for testing.<br>
+### Endpoints
+```
+HELLO (Bare minimum endpoint for testing.)
 https://meowcle.net/cgi-bin/Spheem-API/endpoints/hello.js
+Parameters: N/A
 
-Parameters
-```
-(None)
+CREATE_ACCOUNT (Create a new Spheem account.)
+https://meowcle.net/cgi-bin/Spheem-API/endpoints/create.js
+Parameters: username, password
+
+DELETE_ACCOUNT (Delete a Spheem account.)
+https://meowcle.net/cgi-bin/Spheem-API/endpoints/delete.js
+Parameters: username, password
+
+LOGIN (Login to Spheem account. Account balance provided in response payload if password validation successful.)
+https://meowcle.net/cgi-bin/Spheem-API/endpoints/login.js
+Parameters: username, password
+
+PAY (Transfer funds from the sender account balance to the recipient account balance.)
+https://meowcle.net/cgi-bin/Spheem-API/endpoints/pay.js
+Parameters: username, password, recipient, amount
 ```
 
-Local Execution
+### Example
+
+Request Body
 ```
-./hello.js '{ }'
+{ "username": "meowcle", "password": "abc" }
 ```
+
+Response Body
+```
+{ "result": "OK", "payload": "1000" }
+```
+
+### Local Execution Example
+
+Command
+```
+./login.js '{ "username":"meowcle", "password":"abc" }'
+```
+
+Output
 ```
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Credentials: true
@@ -25,9 +52,9 @@ Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Au
 Status: 200 OK
 Content-Type: application/json; charset=utf-8
 
-{"result":"OK","payload":"Hello, Spheem!"}   
+{"result":"OK","payload":"1000"}   
 ```
 
-## Related Repos
+### Related Repos
 Spheem Frontend: https://github.com/MichaelPineapple/Spheem
 SpheemBot: https://github.com/MichaelPineapple/SpheemBot
