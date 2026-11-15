@@ -1,6 +1,6 @@
 # SpheemAPI
 
-API for Spheem, a toy centralized digital (non crypto) currency system.
+API for Spheem, a toy centralized digital (non crypto) currency system. <br>
 Frontend website: https://meowcle.net/Spheem
 
 ## Endpoints
