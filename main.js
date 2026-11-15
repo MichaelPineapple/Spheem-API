@@ -129,23 +129,57 @@ function pay(request)
     catch (err) { return [RC_FAIL, err] }
 }
 
+// *** Delete Account ***
+function deleteAccount(request)
+{
+    // Get request parameters
+    const username = request.username
+    const password = request.password
+    
+    // Validate request parameters
+    if (username == null) return [RC_FAIL, "Invalid username!"]
+    if (password == null) return [RC_FAIL, "Invalid password!"]
+
+    // Construct account filename
+    const filename = DIR_ACCOUNTS + username
+    
+    // Validate account exists
+    if (!FS.existsSync(filename)) return [RC_FAIL, "Account does not exist!"]
+        
+    try
+    {
+        // Read account data
+        const account = JSON.parse(FS.readFileSync(filename, 'utf8'))
+        
+        // Validate password
+        if (password != account.password) return [RC_FAIL, "Incorrect password!"]
+            
+        // Return account balance
+        return [RC_OK, account.balance]
+    }
+    catch (err) { return [RC_FAIL, err] }
+}
+
 const VERB_HELLO = "HELLO"
-const VERB_CREATEACCOUNT = "CREATEACCOUNT"
+const VERB_CREATE = "CREATE"
 const VERB_LOGIN = "LOGIN"
 const VERB_PAY = "PAY"
+const VERB_DELETE = "DELETE"
 
 const handlerMap = {
     [VERB_HELLO]: hello,
-    [VERB_CREATEACCOUNT]: createAccount,
+    [VERB_CREATE]: createAccount,
     [VERB_LOGIN]: login,
-    [VERB_PAY]: pay
+    [VERB_PAY]: pay,
+    [VERB_DELETE]: deleteAccount
 }
 
 module.exports = {
     VERB_HELLO,
-    VERB_CREATEACCOUNT,
+    VERB_CREATE,
     VERB_LOGIN,
     VERB_PAY,
+    VERB_DELETE,
 
     // *** MAIN ***
     main: function (verb) {
@@ -153,6 +187,6 @@ module.exports = {
         if (parseInt(process.env.CONTENT_LENGTH || "0") > 0) requestRaw = FS.readFileSync(0, 'utf8')
         const response = handlerMap[verb](JSON.parse(requestRaw))
         process.stdout.write("Status: 200 OK\r\nContent-Type: application/json; charset=utf-8\r\n\r\n")
-        process.stdout.write(JSON.stringify({resultCode:response[0], payload:response[1]}))
+        process.stdout.write(JSON.stringify({result:response[0], payload:response[1]}))
     }
 };
