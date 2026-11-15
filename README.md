@@ -36,7 +36,7 @@ Response Body
 { "result": "OK", "payload": "1000" }
 ```
 
-## Local Execution Example
+## Example CLI Execution
 Command
 ```
 ./login.js '{ "username":"meowcle", "password":"abc" }'
