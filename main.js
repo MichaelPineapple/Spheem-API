@@ -171,9 +171,12 @@ function deleteAccount(request)
         
         // Validate password
         if (!validatePassword(account, password)) return [RC_FAIL, "Incorrect password!"]
+        
+        // Delete account data
+        FS.unlinkSync(filename)
             
-        // Return account balance
-        return [RC_OK, account.balance]
+        // Return success
+        return [RC_OK, ""]
     }
     catch (err) { return [RC_FAIL, err] }
 }
