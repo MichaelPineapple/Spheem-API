@@ -1,8 +1,8 @@
 # SpheemAPI
 
-API for Spheem, a toy centralized digital (non crypto) currency system. <br>
-You can test the API here: https://meowcle.net/cgi-bin/Spheem-API/endpoints/hello.js <br>
-Frontend website: https://meowcle.net/Spheem
+Backend API for Spheem, a toy centralized digital (non crypto) currency system.
+
+Test the API: https://meowcle.net/cgi-bin/Spheem-API/endpoints/hello.js
 
 ## Endpoints
 ```
@@ -52,7 +52,3 @@ Content-Type: application/json; charset=utf-8
 
 {"result":"OK","payload":"1000"}   
 ```
-
-## Related Repos
-Spheem Frontend: https://github.com/MichaelPineapple/Spheem <br>
-SpheemBot: https://github.com/MichaelPineapple/SpheemBot
