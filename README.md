@@ -2,28 +2,28 @@
 
 Backend API for Spheem, a toy centralized digital (non crypto) currency system.
 
-Test the API: https://meowcle.net/cgi-bin/Spheem-API/endpoints/hello.js
+Test the API: https://meowcle.net/cgi-bin/SpheemAPI/endpoints/hello.js
 
 ## Endpoints
 ```
 HELLO (Bare minimum endpoint for testing.)
-https://meowcle.net/cgi-bin/Spheem-API/endpoints/hello.js
+https://meowcle.net/cgi-bin/SpheemAPI/endpoints/hello.js
 Parameters: N/A
 
 CREATE_ACCOUNT (Create a new Spheem account.)
-https://meowcle.net/cgi-bin/Spheem-API/endpoints/create.js
+https://meowcle.net/cgi-bin/SpheemAPI/endpoints/create.js
 Parameters: username, password
 
 DELETE_ACCOUNT (Delete a Spheem account.)
-https://meowcle.net/cgi-bin/Spheem-API/endpoints/delete.js
+https://meowcle.net/cgi-bin/SpheemAPI/endpoints/delete.js
 Parameters: username, password
 
 LOGIN (Login to Spheem account. Account balance provided in response payload.)
-https://meowcle.net/cgi-bin/Spheem-API/endpoints/login.js
+https://meowcle.net/cgi-bin/SpheemAPI/endpoints/login.js
 Parameters: username, password
 
 PAY (Transfer funds from the sender account to the recipient account.)
-https://meowcle.net/cgi-bin/Spheem-API/endpoints/pay.js
+https://meowcle.net/cgi-bin/SpheemAPI/endpoints/pay.js
 Parameters: username, password, recipient, amount
 ```
 
