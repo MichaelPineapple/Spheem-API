@@ -1,20 +1,19 @@
-import crypto from 'node:crypto'
-
 const FS = require('fs')
+const CRYPTO = require('crypto')
 const DIR_DATA = "../../../data/spheem/"
 const DIR_ACCOUNTS = DIR_DATA + "accounts/"
 const FILE_TRANSACTIONS = DIR_DATA + "transactions"
 const RC_OK = "OK"
 const RC_FAIL = "FAIL"
 
-function hashPassword(password) 
+function sha256(password)
 {
-    return crypto.createHash('sha256').update(password).digest('hex')
+    return CRYPTO.createHash('sha256').update(password).digest('hex')
 }
 
 function validatePassword(account, password)
 {
-    return (hashPassword(password) == account.passwordHash)
+    return (sha256(password) == account.passwordHash)
 }
 
 // *** Hello ***
@@ -46,7 +45,7 @@ function createAccount(request)
     try
     {
         // Construct new account data
-        const passwordHash = hashPassword(password)
+        const passwordHash = sha256(password)
         const account = { passwordHash:passwordHash, balance:0 }
         
         // Write account data to file
@@ -81,7 +80,7 @@ function login(request)
         const account = JSON.parse(FS.readFileSync(filename, 'utf8'))
         
         // Validate password
-        if (!validatePassword(accountSender, password)) return [RC_FAIL, "Incorrect password!"]
+        if (!validatePassword(account, password)) return [RC_FAIL, "Incorrect password!"]
 
         // Return account balance
         return [RC_OK, account.balance]
