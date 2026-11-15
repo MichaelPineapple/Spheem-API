@@ -186,6 +186,9 @@ module.exports = {
         var requestRaw = process.argv[2] || "{}"
         if (parseInt(process.env.CONTENT_LENGTH || "0") > 0) requestRaw = FS.readFileSync(0, 'utf8')
         const response = handlerMap[verb](JSON.parse(requestRaw))
+        process.stdout.write("Access-Control-Allow-Origin: *\r\n")
+        process.stdout.write("Access-Control-Allow-Credentials: true\r\n")
+        process.stdout.write("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization\r\n")
         process.stdout.write("Status: 200 OK\r\nContent-Type: application/json; charset=utf-8\r\n\r\n")
         process.stdout.write(JSON.stringify({result:response[0], payload:response[1]}))
     }
