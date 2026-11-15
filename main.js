@@ -96,6 +96,12 @@ function pay(request)
     try { amount = parseInt(amountStr) }
     catch (err) { return [RC_FAIL, "Invalid amount!"] }
     
+    // Validate amount greater than zero
+    if (amount <= 0) return [RC_FAIL, "Invalid amount!"]
+    
+    // Validate sender and recipient are not the same
+    if (username == recipient) return [RC_FAIL, "Sender and recipient cannot be the same!"]
+    
     // Construct account filenames
     const filenameSender = DIR_ACCOUNTS + username
     const filenameRecipient = DIR_ACCOUNTS + recipient
