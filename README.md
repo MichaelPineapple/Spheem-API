@@ -14,6 +14,10 @@ CREATE_ACCOUNT (Create a new Spheem account.)
 https://meowcle.net/cgi-bin/Spheem/endpoints/create.js
 Parameters: username, password
 
+UPDATE_ACCOUNT (Update a Spheem account.)
+https://meowcle.net/cgi-bin/Spheem/endpoints/update.js
+Parameters: username, password, new_password
+
 DELETE_ACCOUNT (Delete a Spheem account.)
 https://meowcle.net/cgi-bin/Spheem/endpoints/delete.js
 Parameters: username, password
