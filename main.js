@@ -141,6 +141,11 @@ function pay(request)
         // Write accounts data
         FS.writeFileSync(filenameSender, JSON.stringify(accountSender))
         FS.writeFileSync(filenameRecipient, JSON.stringify(accountRecipient))
+            
+        // Log transaction
+        if (!FS.existsSync(FILE_TRANSACTIONS)) FS.writeFileSync(FILE_TRANSACTIONS, "")
+        const trans = username + " -> " + recipient + " (" + amount + ")"
+        FS.appendFileSync(FILE_TRANSACTIONS, trans + "\n")
         
         return [RC_OK, ""]
     }
