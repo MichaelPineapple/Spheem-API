@@ -16,6 +16,11 @@ function validatePassword(account, password)
     return (sha256(password) == account.passwordHash)
 }
 
+function validateUsername(username)
+{
+    return /^[a-zA-Z0-9]+$/.test(username)
+}
+
 // *** Hello ***
 function hello(request)
 {
@@ -30,7 +35,7 @@ function createAccount(request)
     const password = request.password
     
     // Validate request parameters
-    if (username == null) return [RC_FAIL, "Invalid username!"]
+    if (username == null || !validateUsername(username)) return [RC_FAIL, "Invalid username!"]
     if (password == null) return [RC_FAIL, "Invalid password!"]
 
     // Construct account filename
@@ -65,7 +70,7 @@ function login(request)
     const password = request.password
     
     // Validate request parameters
-    if (username == null) return [RC_FAIL, "Invalid username!"]
+    if (username == null || !validateUsername(username)) return [RC_FAIL, "Invalid username!"]
     if (password == null) return [RC_FAIL, "Invalid password!"]
 
     // Construct account filename
@@ -98,9 +103,9 @@ function pay(request)
     const amountStr = request.amount
         
     // Validate request parameters
-    if (username == null) return [RC_FAIL, "Invalid username!"]
+    if (username == null || !validateUsername(username)) return [RC_FAIL, "Invalid username!"]
+    if (recipient == null || !validateUsername(recipient)) return [RC_FAIL, "Invalid recipient!"]
     if (password == null) return [RC_FAIL, "Invalid password!"]
-    if (recipient == null) return [RC_FAIL, "Invalid recipient!"]
     if (amountStr == null) return [RC_FAIL, "Invalid amount!"]
         
     // Parse amount value
@@ -160,7 +165,7 @@ function deleteAccount(request)
     const password = request.password
     
     // Validate request parameters
-    if (username == null) return [RC_FAIL, "Invalid username!"]
+    if (username == null || !validateUsername(username)) return [RC_FAIL, "Invalid username!"]
     if (password == null) return [RC_FAIL, "Invalid password!"]
 
     // Construct account filename
@@ -195,7 +200,7 @@ function updateAccount(request)
     const newPassword = request.new_password
     
     // Validate request parameters
-    if (username == null) return [RC_FAIL, "Invalid username!"]
+    if (username == null || !validateUsername(username)) return [RC_FAIL, "Invalid username!"]
     if (password == null) return [RC_FAIL, "Invalid password!"]
     if (newPassword == null) return [RC_FAIL, "Invalid new password!"]
 
