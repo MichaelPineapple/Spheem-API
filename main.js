@@ -138,7 +138,7 @@ function pay(request)
         accountSender.balance -= amount
         accountRecipient.balance += amount
             
-        // Update account data
+        // Write accounts data
         FS.writeFileSync(filenameSender, JSON.stringify(accountSender))
         FS.writeFileSync(filenameRecipient, JSON.stringify(accountRecipient))
         
@@ -181,18 +181,59 @@ function deleteAccount(request)
     catch (err) { return [RC_FAIL, err] }
 }
 
+// *** Update Account ***
+function updateAccount(request)
+{
+    // Get request parameters
+    const username = request.username
+    const password = request.password
+    const newPassword = request.new_password
+    
+    // Validate request parameters
+    if (username == null) return [RC_FAIL, "Invalid username!"]
+    if (password == null) return [RC_FAIL, "Invalid password!"]
+    if (newPassword == null) return [RC_FAIL, "Invalid new password!"]
+
+    // Construct account filename
+    const filename = DIR_ACCOUNTS + username
+    
+    // Validate account exists
+    if (!FS.existsSync(filename)) return [RC_FAIL, "Account does not exist!"]
+        
+    try
+    {
+        // Read account data
+        const account = JSON.parse(FS.readFileSync(filename, 'utf8'))
+        
+        // Validate password
+        if (!validatePassword(account, password)) return [RC_FAIL, "Incorrect password!"]
+        
+        // Update password
+        account.passwordHash = sha256(newPassword)
+            
+        // Write account data
+        FS.writeFileSync(filename, JSON.stringify(account))
+            
+        // Return success
+        return [RC_OK, ""]
+    }
+    catch (err) { return [RC_FAIL, err] }
+}
+
 const VERB_HELLO = "HELLO"
 const VERB_CREATE = "CREATE"
 const VERB_LOGIN = "LOGIN"
 const VERB_PAY = "PAY"
 const VERB_DELETE = "DELETE"
+const VERB_UPDATE = "UPDATE"
 
 const handlerMap = {
     [VERB_HELLO]: hello,
     [VERB_CREATE]: createAccount,
     [VERB_LOGIN]: login,
     [VERB_PAY]: pay,
-    [VERB_DELETE]: deleteAccount
+    [VERB_DELETE]: deleteAccount,
+    [VERB_UPDATE]: updateAccount,
 }
 
 module.exports = {
@@ -201,6 +242,7 @@ module.exports = {
     VERB_LOGIN,
     VERB_PAY,
     VERB_DELETE,
+    VERB_UPDATE,
 
     // *** MAIN ***
     main: function (verb) {
